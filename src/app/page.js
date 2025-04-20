@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react'
+
 // 整个项目的入口 从这里开始运行
 // Next.js无需导入核心包
 
@@ -68,8 +70,26 @@ function App() {
     console.log(name, e)
   }
 
-  // 调用useState添加一个状态变量
-  const [count, set_Count] = useState(0)
+  // 调用 useState 添加一个状态变量
+  // count 状态变量
+  // set_Count 修改状态变量的方法
+  const [count, setCount] = useState(0)
+
+  // 点击事件回调
+  const handleClick1 = () => {
+    // 效果
+    // 用传入的新值修改 count
+    // 重新使用新的count渲染UI
+    setCount(count + 1)
+  }
+
+  // useState注意 useState is read-only 只可替换不可修改
+  // 错误示范
+  const handleClickwrong = () => {
+    // 直接修改无法引发视图的更新
+    count++
+    console.log(count)
+  }
 
   return (  
     // JSX = Javascript可编程能力 + HTML声明式模版写法
@@ -114,12 +134,17 @@ function App() {
       {/* 调用使用了自定义参数的函数的时候必须用()=>handleClick(custom_parameter) */}
       {/* 若想要同时使用自定义参数和e 需要用(e)=>声明形参e 并且注意顺序 */}
       <button onClick={(e)=>handleClick('jack', e)}>handleClick</button>
-
       {/* 渲染组件 */}
       {/* 自闭合 */}
       <Button1 />
       {/* 成对标签 */}
       <Button2></Button2>
+
+     {/* count 按钮 */}
+      <button onClick={handleClick1}>{count}</button>
+
+      {/* 错误示范 count 按钮 */}
+      <button onClick={handleClickwrong}>{count}</button>
     </div>
   );
 }
