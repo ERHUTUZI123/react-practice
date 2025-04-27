@@ -9,8 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "classnames": "^2.5.1",
+    "dayjs": "^1.11.13",
+    "lodash": "^4.17.21",
+    "next": "15.2.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.2.5"
+    "sass": "^1.86.3",
+    "uuid": "^11.1.0"
   }
 }

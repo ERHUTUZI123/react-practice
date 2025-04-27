@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react'
-
-// 整个项目的入口 从这里开始运行
-// Next.js无需导入核心包
+// 导入样式
+import './index.css'
 
 const count = 100
 
@@ -49,6 +48,22 @@ const Button2 = () => {
   return <button>const button component</button>
 }
 
+// 行内样式控制
+// 定义 style
+const style = {
+  color: 'red',
+  fontSize: '50px'
+}
+
+// 父传子
+// 1. 父组件传递数据 子组件标签上绑定属性
+// 2. 子组件接收数据 props的参数
+function Son (props) {
+  console.log(props)
+  // 父组件传过来的数据不允许直接修改 只可以读取
+  return <div>this is son compo {props.name} {props.list} {props.children}</div>
+}
+
 function App() {
   // 事件绑定
   // const handleClick = () => {       
@@ -85,11 +100,26 @@ function App() {
 
   // useState注意 useState is read-only 只可替换不可修改
   // 错误示范
-  const handleClickwrong = () => {
-    // 直接修改无法引发视图的更新
-    count++
-    console.log(count)
+  // const handleClickwrong = () => {
+  //   // 直接修改无法引发视图的更新
+  //   count++
+  //   console.log(count)
+  // }
+
+  // 修改对象状态
+  // “修改”的本质是替换
+  const [form, setForm] = useState({name: 'jack'})
+  const changeForm = () => {
+    // 错误写法
+    // form.name = 'john'
+    // 正确写法 setForm 传入一个新对象
+    setForm({
+      ...form,
+      name: 'john'
+    })
   }
+
+  const name = 'jack'
 
   return (  
     // JSX = Javascript可编程能力 + HTML声明式模版写法
@@ -144,7 +174,32 @@ function App() {
       <button onClick={handleClick1}>{count}</button>
 
       {/* 错误示范 count 按钮 */}
-      <button onClick={handleClickwrong}>{count}</button>
+      {/* <button onClick={handleClickwrong}>{count}</button> */}
+
+      {/* 修改对象状态 */}
+      <button onClick={changeForm}>修改对象状态为{form.name}</button>
+
+      {/* 行内样式控制 */}
+      <span style = {style}>行内样式控制 red 50px</span>
+
+      {/* class 类名样式控制 */}
+      <span className="foo">class 类名样式控制 blue</span>
+
+      {/* 渲染Son组件 */}
+      <Son />
+
+      {/* 父组件传输数据 */}
+      <Son 
+        name={name} 
+        age={18}
+        isTrue={false}
+        list={['Vue', 'React']}
+      />
+
+      {/* 父传子children说明 */}
+      <Son>
+        <span>this is a span</span>
+      </Son>
     </div>
   );
 }
