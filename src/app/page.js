@@ -58,10 +58,14 @@ const style = {
 // 父传子
 // 1. 父组件传递数据 子组件标签上绑定属性
 // 2. 子组件接收数据 props的参数
-function Son (props) {
-  console.log(props)
+function Son ({ GetSonMsg }) {
+  const sonmsg = 'hi'
+  // console.log(props)
   // 父组件传过来的数据不允许直接修改 只可以读取
-  return <div>this is son compo {props.name} {props.list} {props.children}</div>
+  // return <div>this is son compo {props.name} {props.list} {props.children}</div>
+  return (
+    <button onClick={()=>GetSonMsg(sonmsg)}>send</button>
+  )
 }
 
 function App() {
@@ -120,6 +124,11 @@ function App() {
   }
 
   const name = 'jack'
+
+
+  const getMsg = (msg) => {
+    console.log(msg)
+  }
 
   return (  
     // JSX = Javascript可编程能力 + HTML声明式模版写法
@@ -186,20 +195,22 @@ function App() {
       <span className="foo">class 类名样式控制 blue</span>
 
       {/* 渲染Son组件 */}
-      <Son />
+      {/* <Son /> */}
 
       {/* 父组件传输数据 */}
-      <Son 
+      {/* <Son 
         name={name} 
         age={18}
         isTrue={false}
         list={['Vue', 'React']}
-      />
+      /> */}
 
       {/* 父传子children说明 */}
-      <Son>
+      {/* <Son>
         <span>this is a span</span>
-      </Son>
+      </Son> */}
+
+      <Son GetSonMsg={getMsg} />
     </div>
   );
 }
