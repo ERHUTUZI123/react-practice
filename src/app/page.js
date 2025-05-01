@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react'
+import { createContext, useEffect, useContext, useState } from 'react'
 // 导入样式
 import './index.css'
 
-const count = 100
+// const count = 100
 
 function getname() {
   return 'jack'
@@ -58,15 +58,54 @@ const style = {
 // 父传子
 // 1. 父组件传递数据 子组件标签上绑定属性
 // 2. 子组件接收数据 props的参数
-function Son ({ GetSonMsg }) {
-  const sonmsg = 'hi'
+// function Son ({ props }) {
   // console.log(props)
   // 父组件传过来的数据不允许直接修改 只可以读取
   // return <div>this is son compo {props.name} {props.list} {props.children}</div>
+// }
+
+// 子传父核心 在子组件中调用父组件中的函数并传递实参
+// function A ({ onGetAMsg }) {
+//   const sonMsg = 'AAA'
+//   return (
+//     <button onClick={() => onGetAMsg(sonMsg)}>send</button>
+//   )
+// }
+
+// 兄弟通信 接收信息
+// function B ({ bname }) {
+//   return (
+//     <div>
+//       this is B component
+//       { bname }
+//     </div>
+//   )
+// }
+
+// 跨层通信
+const MsgContext = createContext()
+
+function A () {
   return (
-    <button onClick={()=>GetSonMsg(sonmsg)}>send</button>
+    <div>
+      this is A component
+      <B />
+    </div>
   )
 }
+
+function B () {
+  const msg = useContext(MsgContext)
+  return (
+    <div>
+      this is B component
+      {msg}
+    </div>
+  )
+}
+
+// useEffect 基础理解和使用
+const URL = 'http://geek.itheima.net/v1_0/channels'
 
 function App() {
   // 事件绑定
@@ -92,15 +131,15 @@ function App() {
   // 调用 useState 添加一个状态变量
   // count 状态变量
   // set_Count 修改状态变量的方法
-  const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0)
 
   // 点击事件回调
-  const handleClick1 = () => {
-    // 效果
-    // 用传入的新值修改 count
-    // 重新使用新的count渲染UI
-    setCount(count + 1)
-  }
+  // const handleClick1 = () => {
+  //   // 效果
+  //   // 用传入的新值修改 count
+  //   // 重新使用新的count渲染UI
+  //   setCount(count + 1)
+  // }
 
   // useState注意 useState is read-only 只可替换不可修改
   // 错误示范
@@ -125,11 +164,46 @@ function App() {
 
   const name = 'jack'
 
+  const [bname, setBname] = useState('')
 
   const getMsg = (msg) => {
     console.log(msg)
+    setBname(msg)
   }
 
+  const msg = 'messageeeee'
+
+  // useEffect的基础理解和使用
+  // useEffect用于仅由渲染本身引起
+  const [list, setList] = useState([])
+  useEffect(() => {
+    async function getList () {
+      const res = await fetch(URL)
+      const jsonRes = await res.json()
+      console.log(jsonRes)
+      setList(jsonRes.data.channels)
+    }
+    getList()
+  }, [])
+
+  // 1. 没有依赖项  初始 + 组件更新
+  // const [count, setCount] = useState(1)
+  // useEffect(() => {
+  //   console.log("副作用函数执行了")
+  // }) // 只要组件发生渲染 就会执行 不一定是count
+  
+  // 2. 传入空数组 只执行一次
+  // const [count, setCount] = useState(1)
+  // useEffect(() => {
+  //   console.log("副作用函数执行了")
+  // }, [])
+
+  // 3. 传入特定依赖项  初始 + 依赖项变化时执行
+  const [count, setCount] = useState(1)
+  useEffect(() => {
+    console.log("副作用函数执行了")
+  }, [count]) // 只会由count引发更新
+  
   return (  
     // JSX = Javascript可编程能力 + HTML声明式模版写法
     <div className="App">  
@@ -150,9 +224,9 @@ function App() {
       {/* map 循环哪个结构 return结构 */}
       {/* 注意事项：加上一个unique 的key string or number usualluy id */}
       {/* key的作用：React框架内部使用 提升更新性能 */}
-      <ul>
+      {/* <ul>
         {list.map(item => <li key={item.id}>{item.name}</li>)}
-      </ul>
+      </ul> */}
 
       {/* 条件渲染 */}
       {/* 在React中 可以通过逻辑与运算符&&，三元表达式(?)实现基础的条件渲染 */}
@@ -180,7 +254,7 @@ function App() {
       <Button2></Button2>
 
      {/* count 按钮 */}
-      <button onClick={handleClick1}>{count}</button>
+      {/* <button onClick={handleClick1}>{count}</button> */}
 
       {/* 错误示范 count 按钮 */}
       {/* <button onClick={handleClickwrong}>{count}</button> */}
@@ -209,8 +283,24 @@ function App() {
       {/* <Son>
         <span>this is a span</span>
       </Son> */}
+      {/* <A onGetAMsg={getMsg} /> */}
 
-      <Son GetSonMsg={getMsg} />
+      {/* 设置变量 实现兄弟通信 */}
+      {/* <B bname={bname}/> */}
+
+      {/* 跨层通信 */}
+      <MsgContext.Provider value={msg}>
+        this is App component
+        <A />
+      </MsgContext.Provider>
+
+      <ul>
+        {list.map(item => <li key={item.id}>{item.name}</li>)}
+      </ul>
+
+      <div>
+        <button onClick={() => setCount(count * 2)}>+{count}</button>
+      </div>
     </div>
   );
 }
