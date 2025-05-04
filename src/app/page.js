@@ -104,6 +104,20 @@ function B () {
   )
 }
 
+// useEffect 清除副作用
+function Son() {
+  // 1. 渲染时开启一个定时器
+  useEffect(()=>{
+    const timer = setInterval(()=>{
+      console.log('Timer is conducting...')
+    }, 1000)
+
+    // 清除定时器
+    return (()=>clearInterval(timer))
+  }, [])
+  return <div>this is son</div>
+}
+
 // useEffect 基础理解和使用
 const URL = 'http://geek.itheima.net/v1_0/channels'
 
@@ -186,24 +200,27 @@ function App() {
     getList()
   }, [])
 
-  // 1. 没有依赖项  初始 + 组件更新
-  // const [count, setCount] = useState(1)
+  const [count, setCount] = useState(0)
+  const [bool, setBool] = useState('true')
+  // 1. 没有依赖项 一旦有组件更新就会执行
   // useEffect(() => {
-  //   console.log("副作用函数执行了")
-  // }) // 只要组件发生渲染 就会执行 不一定是count
+  //   console.log('useEffect has been run.')
+  // })
   
-  // 2. 传入空数组 只执行一次
-  // const [count, setCount] = useState(1)
+  // 2. 有空数组依赖项 执行且只执行一次 
   // useEffect(() => {
-  //   console.log("副作用函数执行了")
+  //   console.log('useEffect has benn run')
   // }, [])
 
-  // 3. 传入特定依赖项  初始 + 依赖项变化时执行
-  const [count, setCount] = useState(1)
-  useEffect(() => {
-    console.log("副作用函数执行了")
-  }, [count]) // 只会由count引发更新
-  
+  // 3. 独特依赖项 只在特定组件更新时执行
+  // useEffect(() => {
+  //   console.log('useEffect has been run')
+  // }, [bool])
+
+
+  // 清除useEffect副作用的设置
+  const [show, setShow] = useState(true)
+
   return (  
     // JSX = Javascript可编程能力 + HTML声明式模版写法
     <div className="App">  
@@ -299,7 +316,13 @@ function App() {
       </ul>
 
       <div>
-        <button onClick={() => setCount(count * 2)}>+{count}</button>
+        <button onClick={() => setBool('False')}>setBool to {bool}</button>
+        <button onClick={() => setCount(count + 1)}>setCount to {count}</button>
+      </div>
+
+      <div>
+        {show && <Son />}
+        <button onClick={() => setShow(false)}>uninstall son component</button>
       </div>
     </div>
   );
