@@ -121,6 +121,18 @@ function Son() {
 // useEffect 基础理解和使用
 const URL = 'http://geek.itheima.net/v1_0/channels'
 
+// 自定义useToggle Hook
+function useToggle() {
+  const [value, setValue] = useState(true)
+
+  const toggle = ()=>setValue(!value)
+
+  return {
+    value,
+    toggle
+  }
+}
+
 function App() {
   // 事件绑定
   // const handleClick = () => {       
@@ -220,6 +232,14 @@ function App() {
 
   // 清除useEffect副作用的设置
   const [show, setShow] = useState(true)
+
+  // 不封装Hook实现展示功能
+  // const [value, setValue] = useState(true)
+
+  // const toggle = () => setValue(!value)
+
+  // 导入封装Hook return value
+  const {value, toggle} = useToggle()
 
   return (  
     // JSX = Javascript可编程能力 + HTML声明式模版写法
@@ -323,6 +343,11 @@ function App() {
       <div>
         {show && <Son />}
         <button onClick={() => setShow(false)}>uninstall son component</button>
+      </div>
+
+      <div>
+        {value && <div>this is div</div>}
+        <button onClick={toggle}>toggle</button>
       </div>
     </div>
   );
