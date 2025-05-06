@@ -1,0 +1,63 @@
+<!-- 1. Store 一个存储State的对象 -->
+<!-- 2. Action 一个描述你希望如何更新State的函数 -->
+<!-- 3. Reducer 一个更新状态的函数 -->
+ <!-- View的Action通过Reducer改变State反映在View上 -->
+
+<!-- View -->
+<button id="decrement">-</button>
+<span id="count">0</span>
+<button id="increment">+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.2.1/redux.min.js"></script>
+
+<script>
+    // 1. 定义Reducer函数
+    // 作用：根据不同的Action对象，返回不同的新的State
+    
+    // STEP2
+    // 让接收到的Action通过Reducer函数更新Store里的State
+    function reducer (state={count: 0}, action) {
+        // 数据不可变 只可以基于原始的状态生成新的状态
+        if(action.type==='INCREMENT') {
+            return {count: state.count + 1}
+        }
+        
+        if(action.type==='DECREMENT') {
+            return {count: state.count - 1}
+        }
+    }
+    // 2. 使用Reduer函数生成Store实例
+
+    // 创建Store
+    const store = Redux.createStore(reducer)
+
+    // 3. 通过store实例的subscribe订阅数据变化
+
+    // STEP3
+    // 跟踪数据变化
+    // 将State的变化反映到View上
+    store.subscribe(()=>{
+        console.log('state变化了', store.getState())
+        document.getElementById('count').innerText = store.getState().count
+    })
+
+    // 4. 通过store实例的dispatch函数提交action更新状态
+
+    // STEP1
+    // 借助dispatch让View控制Action
+    const inBtn = document.getElementById('increment')
+    inBtn.addEventListener('click', ()=>{
+        // 增
+        store.dispatch({
+            type: 'INCREMENT'
+        })
+    })
+
+    const dBtn = document.getElementById('decrement')
+    dBtn.addEventListener('click', ()=>{
+        // 减
+        store.dispatch({
+            type: 'DECREMENT'
+        })
+    })
+</script>
